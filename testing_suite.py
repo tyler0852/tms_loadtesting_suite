@@ -58,8 +58,6 @@ def run_once(run_root: Path, test_name: str, endpoint: str, users: int, iteratio
     else:
         reqs, fails = parse_req_fails(log_text)
         if reqs is None:
-            # If we couldn't parse but no obvious error, keep it minimal:
-            # treat as 0/0 (won't affect overall unless you want it to).
             reqs, fails = 0, 0
 
     fail_pct = 0.0 if reqs == 0 else (fails / reqs) * 100.0
