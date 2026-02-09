@@ -1,0 +1,12 @@
+Starting tms_loadtest
+14:01:39 [INFO] Output verbosity level: INFO
+14:01:39 [INFO] Logfile verbosity level: WARN
+14:01:39 [INFO] users = 1
+14:01:39 [INFO] iterations = 100
+14:01:39 [INFO] scenarios = Scenarios { active: ["createclient"] }
+Scenarios:
+ - createkey: ("createkey")
+ - getclient: ("getclient")
+ - getkey: ("getkey")
+ - getversion: ("getversion")
+Error: NoScenarios { detail: "No scenarios are enabled." }
