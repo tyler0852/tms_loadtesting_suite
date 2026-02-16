@@ -21,10 +21,6 @@ def parse_req_fails(log_text: str):
     fails = int(m.group(3).replace(",", ""))
     return reqs, fails
 
-def log_has_fatal_error(log_text: str) -> bool:
-    # Minimal “something went wrong” detection
-    return ("Error:" in log_text) or ("No scenarios are enabled" in log_text) or ("NoScenarios" in log_text)
-
 def run_once(run_root: Path, test_name: str, endpoint: str, users: int, iterations: int, throttle_requests=None):
     host = os.environ["TMS_URL"]
 
@@ -52,16 +48,16 @@ def run_once(run_root: Path, test_name: str, endpoint: str, users: int, iteratio
     log_text = p.stdout
     logfile.write_text(log_text)
 
-    # If the run clearly errored out (like NoScenarios), mark as 100% fail.
-    if log_has_fatal_error(log_text):
-        reqs, fails = 1, 1
-    else:
-        reqs, fails = parse_req_fails(log_text)
-        if reqs is None:
-            reqs, fails = 0, 0
+    reqs, fails = parse_req_fails(log_text)
+
+    if reqs is None:
+        if p.returncode != 0:
+            reqs, fails = 1, 1  
+        else:
+            reqs, fails = 0, 0   
 
     fail_pct = 0.0 if reqs == 0 else (fails / reqs) * 100.0
-    passed = (fails == 0)
+    passed = (fails == 0 and p.returncode == 0)
 
     return {
         "test": test_name,
